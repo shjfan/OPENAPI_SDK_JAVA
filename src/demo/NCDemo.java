@@ -10,7 +10,8 @@ import com.api.NCApiConst;
   
 public class NCDemo {  
   
-	public static final String store_url = "http://gw.api.yonyou.com/gateway";
+	//public static final String store_url = "http://gw.api.yonyou.com/gateway";
+	public static final String store_url = "http://127.0.0.1:9080/gateway";
 	public static final String resultType = "json";
 	
 	public static final String appKey = "Xb9tE";	
@@ -37,14 +38,12 @@ public class NCDemo {
         	uap_token = demo.loginNC();
         	NCApi.getInstance().setUap_token(uap_token);       	
         	
-        	System.out.println("查询销售订单");
-    		Map<String, String> propertys = new HashMap<String, String>();
-    		propertys.put("content-type", "application/json");    		
+        	System.out.println("查询销售订单");  		
     		System.out.println("查询销售组织T300502下的销售订单SO302015040700000028");
     		Map<String, String> getparams = new HashMap<String, String>();
     		getparams.put("orgcode", "T300502");
     		getparams.put("vbillcode", "SO302015040700000028");
-    		String res = NCApi.getInstance().sendGet(NCApiConst.URL_SO_1_QUERYORDER, getparams, null);
+    		String res = NCApi.getInstance().sendGet(NCApiConst.URL_SO_1_QUERYORDER, getparams);
     		String msg= new JSONObject(res).getString("message");
     		System.out.println("返回结果"+msg);
         
@@ -74,8 +73,6 @@ public class NCDemo {
 	public String loginNC() throws Exception {
 		String uap_token = null;
 		System.out.println("开始登录NC");
-		Map<String, String> propertys = new HashMap<String, String>();
-		propertys.put("content-type", "application/json");
 		
 		JSONObject json = new JSONObject();
 		json.put("usercode", uap_usercode);
@@ -83,7 +80,7 @@ public class NCDemo {
 		String postparam = json.toString();
 		
 		String res = NCApi.getInstance().sendPost(
-				NCApiConst.URL_SCMBASE_1_USERLOGIN, postparam, propertys);
+				NCApiConst.URL_SCMBASE_1_USERLOGIN, postparam);
 		/**
 		 * 返回结果的格式还有待调整
 		 * 现版本是在NCapi返回结果外封装了一层，用来记录执行状态

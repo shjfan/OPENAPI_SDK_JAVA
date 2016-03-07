@@ -36,11 +36,19 @@ public class NCApi {
 		return instance;
 	}
 	
+	public String sendPost(String apiurl,String postparam) throws IOException{
+		return sendPost(apiurl,postparam,null);
+	}
+	
 	public String sendPost(String apiurl,String postparam,Map<String, String> propertys) throws IOException{
 		if(propertys==null){
 			propertys =new HashMap<String,String>(); 
 		}
 		return send(apiurl,new HashMap<String,String>(),postparam,propertys,"POST");
+	}
+	
+	public String sendGet(String apiurl,Map<String, String> getparams) throws IOException{
+		return sendGet(apiurl,getparams,null);
 	}
 	
 	public String sendGet(String apiurl,Map<String, String> getparams,Map<String, String> propertys) throws IOException{
@@ -75,11 +83,10 @@ public class NCApi {
 		propertys.put(STR_UAP_TOKEN, getUap_token());
 		propertys.put(STR_UAP_USERCODE, getUap_usercode());
 		
+		propertys.put("content-type", "application/json");
+		
 		getparams.put(STR_RESULTTYPE, getResultType());
-		getparams.put(STR_TIMESTAMP, timestamp);
-		
-		
-		
+		getparams.put(STR_TIMESTAMP, timestamp);		
 	}
 	
 	public String getStore_url() {
