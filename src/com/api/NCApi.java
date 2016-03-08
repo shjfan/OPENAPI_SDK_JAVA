@@ -37,7 +37,9 @@ public class NCApi {
 	}
 	
 	public String sendPost(String apiurl,String postparam) throws IOException{
-		return sendPost(apiurl,postparam,null);
+		Map<String, String> propertys =new HashMap<String,String>();
+		propertys.put("content-type", "application/json");
+		return sendPost(apiurl,postparam,propertys);
 	}
 	
 	public String sendPost(String apiurl,String postparam,Map<String, String> propertys) throws IOException{
@@ -74,7 +76,15 @@ public class NCApi {
 	
 	private void addNC(Map<String, String> getparams,
             Map<String, String> propertys){	
+		/**
+		 * 可以用来防止请求重放
+		 * 考虑网络延迟,可通过截取长度来区分
+		 * 如10位，表示1秒以内，9位表示10秒以内，8位表示100秒以内
+		 * 功能在开发中
+		 */
 		String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+		
+		
 		String oauth = MD5Util.MD5Encrypt(appKey+timestamp+accessToken);
 		propertys.put(STR_APP_KEY, getAppKey());
 		propertys.put(STR_OAUTH, oauth);
@@ -83,7 +93,7 @@ public class NCApi {
 		propertys.put(STR_UAP_TOKEN, getUap_token());
 		propertys.put(STR_UAP_USERCODE, getUap_usercode());
 		
-		propertys.put("content-type", "application/json");
+		//propertys.put("content-type", "application/json");
 		
 		getparams.put(STR_RESULTTYPE, getResultType());
 		getparams.put(STR_TIMESTAMP, timestamp);		

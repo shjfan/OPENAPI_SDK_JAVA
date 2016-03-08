@@ -10,8 +10,8 @@ import com.api.NCApiConst;
   
 public class NCDemo {  
   
-	//public static final String store_url = "http://gw.api.yonyou.com/gateway";
-	public static final String store_url = "http://127.0.0.1:9080/gateway";
+	public static final String store_url = "http://gw.api.yonyou.com/gateway";
+	//public static final String store_url = "http://127.0.0.1:9080/gateway";
 	public static final String resultType = "json";
 	
 	public static final String appKey = "Xb9tE";	
@@ -24,13 +24,14 @@ public class NCDemo {
 	public static String uap_userpassword="nc1234";
 	
 	
-    /** 
+    /**
+     * @throws InterruptedException  
      * @Description: TODO 
      * @param @param args     
      * @return      
      * @throws  
      */  
-    public static void main(String[] args) {  
+    public static void main(String[] args) throws InterruptedException {  
     	
         NCDemo demo = new NCDemo();
         demo.init();   
@@ -77,8 +78,7 @@ public class NCDemo {
 		JSONObject json = new JSONObject();
 		json.put("usercode", uap_usercode);
 		json.put("pwd", uap_userpassword);		
-		String postparam = json.toString();
-		
+		String postparam = json.toString();		
 		String res = NCApi.getInstance().sendPost(
 				NCApiConst.URL_SCMBASE_1_USERLOGIN, postparam);
 		/**
