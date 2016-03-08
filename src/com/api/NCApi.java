@@ -82,7 +82,7 @@ public class NCApi {
 		 * 如10位，表示1秒以内，9位表示10秒以内，8位表示100秒以内
 		 * 功能在开发中
 		 */
-		String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+		String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 9);
 		
 		
 		String oauth = MD5Util.MD5Encrypt(appKey+timestamp+accessToken);
