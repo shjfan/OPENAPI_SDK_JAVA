@@ -10,8 +10,8 @@ import com.api.NCApiConst;
   
 public class NCDemo {  
   
-	public static final String store_url = "http://gw.api.yonyou.com/gateway";
-	//public static final String store_url = "http://127.0.0.1:9080/gateway";
+	//public static final String store_url = "http://gw.api.yonyou.com/gateway";
+	public static final String store_url = "http://127.0.0.1:9080/gateway";
 	public static final String resultType = "json";
 	
 	public static final String appKey = "Xb9tE";	
@@ -36,7 +36,7 @@ public class NCDemo {
         NCDemo demo = new NCDemo();
         demo.init();   
         try {     
-        	uap_token = demo.loginNC();
+        	//uap_token = demo.loginNC();
         	NCApi.getInstance().setUap_token(uap_token);       	
         	
         	System.out.println("查询销售订单");  		
@@ -45,8 +45,8 @@ public class NCDemo {
     		getparams.put("orgcode", "T300502");
     		getparams.put("vbillcode", "SO302015040700000028");
     		String res = NCApi.getInstance().sendGet(NCApiConst.URL_SO_1_QUERYORDER, getparams);
-    		String msg= new JSONObject(res).getString("message");
-    		System.out.println("返回结果"+msg);
+    		System.out.println("返回结果"+res);
+    		checkerror(res);
         
         } catch (Exception e) {       
             e.printStackTrace();       
@@ -87,13 +87,21 @@ public class NCDemo {
 		 * 返货结果中的message为NCapi的实际返回结果
 		 */
 		System.out.println("登录NC返回结果：" + res);
+		checkerror(res);
 		JSONObject jsonObject = new JSONObject(res);
-		uap_token = new JSONObject(jsonObject.getString("message"))
-				.getString("uap_token");
+		uap_token = jsonObject.getString("uap_token");
 		if (uap_token == null || uap_token.trim().length() <= 0) {
 			throw new Exception("登录失败,返回uap_token为空!");
 		}
 		System.out.println("uap_token="+uap_token);
 		return uap_token;
+	}
+	public static void checkerror(String jsonres)throws Exception{
+		JSONObject jsonObject = new JSONObject(jsonres);
+		if(jsonObject.has("errorcode")){
+			String errorcode = jsonObject.getString("errorcode");
+			String errormessage = jsonObject.getString("errormessage");
+			throw new Exception("错误编码："+errorcode+"；错误信息："+errormessage);
+		}
 	}
 }  
