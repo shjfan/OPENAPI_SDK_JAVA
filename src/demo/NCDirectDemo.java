@@ -8,14 +8,9 @@ import org.json.JSONObject;
 import com.api.NCApi;
 import com.api.NCApiConst;
   
-public class NCDemo {  
+public class NCDirectDemo {  
   
-	//public static final String store_url = "http://gw.api.yonyou.com/gateway";
-	public static final String gateway_url = "http://172.20.8.102/gateway/demo";
-	public static final String resultType = "json";
-	
-	public static final String appKey = "UtwLQ";	
-	public static final String accessToken = "2221f1ba-c563-4d8e-8e69-205a71a57ec8";
+	public static final String store_url = "http://172.20.8.102/direct/demo";
 	
 	public static final String uap_dataSource="nc65user";	
 	public static final String uap_usercode="licc";	
@@ -58,10 +53,6 @@ public class NCDemo {
      * 初始化信息
      */
     public void init(){
-    	NCApi.getInstance().setGateway_url(gateway_url);
-        NCApi.getInstance().setResultType(resultType);
-        NCApi.getInstance().setAppKey(appKey);
-        NCApi.getInstance().setAccessToken(accessToken);
         
         NCApi.getInstance().setUap_dataSource(uap_dataSource);
         NCApi.getInstance().setUap_token(uap_token);
@@ -91,7 +82,6 @@ public class NCDemo {
 		System.out.println("uap_token="+uap_token);
 		return uap_token;
 	}
-	
 	/**
 	 * 返回结果处理
 	 * @param jsonres
@@ -109,4 +99,5 @@ public class NCDemo {
 		}
 		return jsonObject.getString("data");
 	}
+	
 }  

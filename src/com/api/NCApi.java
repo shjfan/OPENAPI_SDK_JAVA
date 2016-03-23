@@ -17,7 +17,9 @@ public class NCApi {
 	private static final String STR_UAP_TOKEN="uap_token";
 	private static final String STR_UAP_USERCODE="uap_usercode";
 	
-	private String store_url;
+	//开放平台网关地址
+	private String gateway_url;
+	
 	private String appKey;
 	private String accessToken;
 	private String resultType;
@@ -36,23 +38,44 @@ public class NCApi {
 		return instance;
 	}
 	
+	/**
+	 * post请求
+	 * @param apiurl api服务的url
+	 * @param postparam post参数（json格式）
+	 * @return
+	 * @throws IOException
+	 */
 	public String sendPost(String apiurl,String postparam) throws IOException{
 		Map<String, String> propertys =new HashMap<String,String>();
 		propertys.put("content-type", "application/json");
 		return sendPost(apiurl,postparam,propertys);
 	}
 	
+	/**
+	 * post请求
+	 * @param apiurl api服务url
+	 * @param postparam post参数（json格式）
+	 * @param propertys header参数
+	 * @return
+	 * @throws IOException
+	 */
 	public String sendPost(String apiurl,String postparam,Map<String, String> propertys) throws IOException{
 		if(propertys==null){
 			propertys =new HashMap<String,String>(); 
 		}
-		return send(apiurl,new HashMap<String,String>(),postparam,propertys,"POST");
+		return send(apiurl,new HashMap<String,String>(),postparam,propertys,"POST",false);
 	}
 	
+	/**
+	 * get请求
+	 * @param apiurl api服务url
+	 * @param getparams body参数
+	 * @return
+	 * @throws IOException
+	 */
 	public String sendGet(String apiurl,Map<String, String> getparams) throws IOException{
 		return sendGet(apiurl,getparams,null);
 	}
-	
 	public String sendGet(String apiurl,Map<String, String> getparams,Map<String, String> propertys) throws IOException{
 		if(getparams==null){
 			getparams =new HashMap<String,String>(); 
@@ -60,51 +83,130 @@ public class NCApi {
 		if(propertys==null){
 			propertys =new HashMap<String,String>(); 
 		}
-		return send(apiurl,getparams,null,propertys,"GET");
+		return send(apiurl,getparams,null,propertys,"GET",false);
+	}
+	/**
+	 * post直接请求
+	 * 即开发平台不经过任何权限、安全的验证
+	 * 不需要传递开放平台所需的参数，只需传递实际api所需参数
+	 * @param apiurl api服务url
+	 * @param postparam post参数（json格式）
+	 * @return
+	 * @throws IOException
+	 */
+	public String sendPostDirect(String apiurl,String postparam) throws IOException{
+		Map<String, String> propertys =new HashMap<String,String>();
+		propertys.put("content-type", "application/json");
+		return sendPostDirect(apiurl,postparam,propertys);
+	}
+	/**
+	 * post直接请求
+	 * 即开发平台不经过任何权限、安全的验证
+	 * 不需要传递开放平台所需的参数，只需传递实际api所需参数
+	 * @param apiurl api服务url
+	 * @param postparam post参数（json格式）
+	 * @param propertys header参数
+	 * @return
+	 * @throws IOException
+	 */
+	public String sendPostDirect(String apiurl,String postparam,Map<String, String> propertys) throws IOException{
+		if(propertys==null){
+			propertys =new HashMap<String,String>(); 
+		}
+		return send(apiurl,new HashMap<String,String>(),postparam,propertys,"POST",true);
+	}
+	/**
+	 * get直接请求
+	 * 即开发平台不经过任何权限、安全的验证
+	 * 不需要传递开放平台所需的参数，只需传递实际api所需参数
+	 * @param apiurl api服务url
+	 * @param getparams body参数
+	 * @return
+	 * @throws IOException
+	 */
+	public String sendGetDirect(String apiurl,Map<String, String> getparams) throws IOException{
+		return sendGetDirect(apiurl,getparams,null);
 	}
 	
+	/**
+	 * get直接请求
+	 * 即开发平台不经过任何权限、安全的验证
+	 * 不需要传递开放平台所需的参数，只需传递实际api所需参数
+	 * @param apiurl api服务url
+	 * @param getparams body参数
+	 * @param propertys header参数
+	 * @return
+	 * @throws IOException
+	 */
+	public String sendGetDirect(String apiurl,Map<String, String> getparams,Map<String, String> propertys) throws IOException{
+		if(getparams==null){
+			getparams =new HashMap<String,String>(); 
+		}
+		if(propertys==null){
+			propertys =new HashMap<String,String>(); 
+		}
+		return send(apiurl,getparams,null,propertys,"GET",true);
+	}
+	
+	/**
+	 * 发送请求
+	 * @param apiurl api服务url
+	 * @param getparams get的body参数
+	 * @param postparam post的body参数（json格式）
+	 * @param propertys header参数
+	 * @param method 请求方法get或post
+	 * @param isdirect 是否直接请求
+	 * @return
+	 * @throws IOException
+	 */
 	private  String send(String apiurl,Map<String, String> getparams,String postparam,  
-            Map<String, String> propertys,String method) throws IOException{
-		addNC(getparams, propertys);
+            Map<String, String> propertys,String method,boolean isdirect) throws IOException{
+		addNCParams(getparams, propertys,isdirect);
 		
 		HttpRequester request = new HttpRequester();  
         request.setDefaultContentEncoding("utf-8"); 
-        HttpRespons httpRespons= request.send(getStore_url()+apiurl, method, getparams,postparam, propertys);
+        HttpRespons httpRespons= request.send(getGateway_url()+apiurl, method, getparams,postparam, propertys);
 		return httpRespons.content;
         
 	}
 	
-	private void addNC(Map<String, String> getparams,
-            Map<String, String> propertys){	
-		/**
-		 * 可以用来防止请求重放
-		 * 考虑网络延迟,可通过截取长度来区分
-		 * 如10位，表示1秒以内，9位表示10秒以内，8位表示100秒以内
-		 * 功能在开发中
-		 */
-		String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 9);
-		
-		
-		String oauth = MD5Util.MD5Encrypt(appKey+timestamp+accessToken);
-		propertys.put(STR_APP_KEY, getAppKey());
-		propertys.put(STR_OAUTH, oauth);
-		
+	/**
+	 * 增加默认参数
+	 * @param getparams get的body参数
+	 * @param propertys header参数
+	 * @param isdirect 是否直接请求
+	 */
+	private void addNCParams(Map<String, String> getparams,
+            Map<String, String> propertys,boolean isdirect){
+		if(!isdirect){
+			/**
+			 * 可以用来防止请求重放
+			 * 考虑网络延迟,可通过截取长度来区分
+			 * 如10位，表示1秒以内，9位表示10秒以内，8位表示100秒以内
+			 * 功能在开发中
+			 */
+			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 8);
+			
+			
+			String oauth = MD5Util.MD5Encrypt(appKey+timestamp+accessToken);
+			propertys.put(STR_APP_KEY, getAppKey());
+			propertys.put(STR_OAUTH, oauth);
+			getparams.put(STR_RESULTTYPE, getResultType());
+			getparams.put(STR_TIMESTAMP, timestamp);
+		}
 		propertys.put(STR_UAP_DATASOURCE, getUap_dataSource());
 		propertys.put(STR_UAP_TOKEN, getUap_token());
 		propertys.put(STR_UAP_USERCODE, getUap_usercode());
 		
-		//propertys.put("content-type", "application/json");
-		
-		getparams.put(STR_RESULTTYPE, getResultType());
-		getparams.put(STR_TIMESTAMP, timestamp);		
+				
 	}
 	
-	public String getStore_url() {
-		return store_url;
+	public String getGateway_url() {
+		return gateway_url;
 	}
 
-	public void setStore_url(String store_url) {
-		this.store_url = store_url;
+	public void setGateway_url(String gateway_url) {
+		this.gateway_url = gateway_url;
 	}
 	public String getAppKey() {
 		return appKey;
