@@ -10,7 +10,7 @@ import com.api.NCApiConst;
   
 public class NCDirectDemo {  
   
-	public static final String store_url = "http://172.20.8.102/direct/demo";
+	public static final String store_url = "http://gw.api.yonyou.com/direct/demo";
 	
 	public static final String uap_dataSource="nc65user";	
 	public static final String uap_usercode="licc";	
