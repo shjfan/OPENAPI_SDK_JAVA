@@ -10,7 +10,8 @@ import com.api.NCApiConst;
   
 public class NCDemo {  
   
-	public static final String gateway_url = "http://gw.api.yonyou.com/gateway/demo";
+	//public static final String gateway_url = "http://gw.api.yonyou.com/gateway/demo";
+	public static final String gateway_url = "http://127.0.0.1:9080/gateway/demo";
 	public static final String resultType = "json";
 	
 	public static final String appKey = "UtwLQ";	
@@ -19,7 +20,7 @@ public class NCDemo {
 	public static final String uap_dataSource="nc65user";	
 	public static final String uap_usercode="licc";	
 	
-	public static String uap_token="123456";	
+	public static String uap_token="1";	
 	public static String uap_userpassword="nc1234";
 	
 	
@@ -101,10 +102,9 @@ public class NCDemo {
 		JSONObject jsonObject = new JSONObject(jsonres);
 		String statuscode = jsonObject.getString("statuscode");
 		if(!"0".equalsIgnoreCase(statuscode)){
-			String errorcode = jsonObject.getString("errorcode");
 			String errormsg = jsonObject.getString("errormsg");
 			String errordetailmsg = jsonObject.getString("errordetailmsg");
-			throw new Exception("错误编码："+errorcode+"；错误信息："+errormsg+";详细错误信息："+errordetailmsg);			
+			throw new Exception("错误编码："+statuscode+"；错误信息："+errormsg+";详细错误信息："+errordetailmsg);			
 		}
 		return jsonObject.getString("data");
 	}

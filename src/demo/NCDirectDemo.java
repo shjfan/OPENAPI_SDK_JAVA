@@ -92,10 +92,9 @@ public class NCDirectDemo {
 		JSONObject jsonObject = new JSONObject(jsonres);
 		String statuscode = jsonObject.getString("statuscode");
 		if(!"0".equalsIgnoreCase(statuscode)){
-			String errorcode = jsonObject.getString("errorcode");
 			String errormsg = jsonObject.getString("errormsg");
 			String errordetailmsg = jsonObject.getString("errordetailmsg");
-			throw new Exception("错误编码："+errorcode+"；错误信息："+errormsg+";详细错误信息："+errordetailmsg);			
+			throw new Exception("错误编码："+statuscode+"；错误信息："+errormsg+";详细错误信息："+errordetailmsg);			
 		}
 		return jsonObject.getString("data");
 	}
