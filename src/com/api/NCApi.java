@@ -1,6 +1,5 @@
 package com.api;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,9 +42,9 @@ public class NCApi {
 	 * @param apiurl api服务的url
 	 * @param postparam post参数（json格式）
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public String sendPost(String apiurl,String postparam) throws IOException{
+	public String sendPost(String apiurl,String postparam) throws Exception{
 		Map<String, String> propertys =new HashMap<String,String>();
 		propertys.put("content-type", "application/json");
 		return sendPost(apiurl,postparam,propertys);
@@ -57,9 +56,9 @@ public class NCApi {
 	 * @param postparam post参数（json格式）
 	 * @param propertys header参数
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public String sendPost(String apiurl,String postparam,Map<String, String> propertys) throws IOException{
+	public String sendPost(String apiurl,String postparam,Map<String, String> propertys) throws Exception{
 		if(propertys==null){
 			propertys =new HashMap<String,String>(); 
 		}
@@ -71,12 +70,12 @@ public class NCApi {
 	 * @param apiurl api服务url
 	 * @param getparams body参数
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public String sendGet(String apiurl,Map<String, String> getparams) throws IOException{
+	public String sendGet(String apiurl,Map<String, String> getparams) throws Exception{
 		return sendGet(apiurl,getparams,null);
 	}
-	public String sendGet(String apiurl,Map<String, String> getparams,Map<String, String> propertys) throws IOException{
+	public String sendGet(String apiurl,Map<String, String> getparams,Map<String, String> propertys) throws Exception{
 		if(getparams==null){
 			getparams =new HashMap<String,String>(); 
 		}
@@ -92,9 +91,9 @@ public class NCApi {
 	 * @param apiurl api服务url
 	 * @param postparam post参数（json格式）
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public String sendPostDirect(String apiurl,String postparam) throws IOException{
+	public String sendPostDirect(String apiurl,String postparam) throws Exception{
 		Map<String, String> propertys =new HashMap<String,String>();
 		propertys.put("content-type", "application/json");
 		return sendPostDirect(apiurl,postparam,propertys);
@@ -107,9 +106,9 @@ public class NCApi {
 	 * @param postparam post参数（json格式）
 	 * @param propertys header参数
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public String sendPostDirect(String apiurl,String postparam,Map<String, String> propertys) throws IOException{
+	public String sendPostDirect(String apiurl,String postparam,Map<String, String> propertys) throws Exception{
 		if(propertys==null){
 			propertys =new HashMap<String,String>(); 
 		}
@@ -122,9 +121,9 @@ public class NCApi {
 	 * @param apiurl api服务url
 	 * @param getparams body参数
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public String sendGetDirect(String apiurl,Map<String, String> getparams) throws IOException{
+	public String sendGetDirect(String apiurl,Map<String, String> getparams) throws Exception{
 		return sendGetDirect(apiurl,getparams,null);
 	}
 	
@@ -136,9 +135,9 @@ public class NCApi {
 	 * @param getparams body参数
 	 * @param propertys header参数
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public String sendGetDirect(String apiurl,Map<String, String> getparams,Map<String, String> propertys) throws IOException{
+	public String sendGetDirect(String apiurl,Map<String, String> getparams,Map<String, String> propertys) throws Exception{
 		if(getparams==null){
 			getparams =new HashMap<String,String>(); 
 		}
@@ -157,17 +156,35 @@ public class NCApi {
 	 * @param method 请求方法get或post
 	 * @param isdirect 是否直接请求
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 */
 	private  String send(String apiurl,Map<String, String> getparams,String postparam,  
-            Map<String, String> propertys,String method,boolean isdirect) throws IOException{
+            Map<String, String> propertys,String method,boolean isdirect) throws Exception{
 		addNCParams(getparams, propertys,isdirect);
+		if(isHttps(getGateway_url())){
+			return HttpsRequest.send(getGateway_url()+apiurl, method,getparams, postparam,propertys);
+		}else{
+			HttpRequester request = new HttpRequester();  
+	        request.setDefaultContentEncoding("utf-8"); 
+	        HttpRespons httpRespons= request.send(getGateway_url()+apiurl, method, getparams,postparam, propertys);
+			return httpRespons.content;
+		}        
+	}
+	
+	/**
+	 * 判断是否https请求
+	 * @param urlstr
+	 * @return
+	 */
+	private boolean isHttps(String urlstr){
+		if(urlstr!=null){
+			if(urlstr.startsWith("https")||urlstr.startsWith("HTTPS")){
+				return true;
+			}
+		}
 		
-		HttpRequester request = new HttpRequester();  
-        request.setDefaultContentEncoding("utf-8"); 
-        HttpRespons httpRespons= request.send(getGateway_url()+apiurl, method, getparams,postparam, propertys);
-		return httpRespons.content;
-        
+		
+		return false;
 	}
 	
 	/**
@@ -185,7 +202,7 @@ public class NCApi {
 			 * 如10位，表示1秒以内，9位表示10秒以内，8位表示100秒以内
 			 * 功能在开发中
 			 */
-			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 8);
+			String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 6);
 			
 			
 			String oauth = MD5Util.MD5Encrypt(appKey+timestamp+accessToken);

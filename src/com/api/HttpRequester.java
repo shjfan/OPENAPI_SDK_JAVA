@@ -195,10 +195,11 @@ public class HttpRequester {
         urlConnection.setDoInput(true);  
         urlConnection.setUseCaches(false);  
    
-        if (propertys != null)  
+        if (propertys != null)  {
             for (String key : propertys.keySet()) {  
                 urlConnection.addRequestProperty(key, propertys.get(key));  
             }  
+        }
    
         if (postparameter != null&&postparameter.trim().length()>0) {  
         	
