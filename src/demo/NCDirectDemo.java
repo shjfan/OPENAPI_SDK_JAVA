@@ -10,7 +10,12 @@ import com.api.NCApiConst;
   
 public class NCDirectDemo {  
   
-	public static final String store_url = "http://gw.api.yonyou.com/direct/demo";
+	public static final String store_url = "https://gw.api.yonyou.com/direct/demo";
+	
+	//尝试https协议的话，可以修改为下面的地址
+	//public static final String store_url = "https://gw.api.yonyou.com/direct/demo";
+	
+	//public static final String store_url = "http://127.0.0.1:6795/uapws/rest";
 	
 	public static final String uap_dataSource="nc65user";	
 	public static final String uap_usercode="licc";	
@@ -28,10 +33,11 @@ public class NCDirectDemo {
      */  
     public static void main(String[] args) throws InterruptedException {  
     	
-        NCDemo demo = new NCDemo();
+    	NCDirectDemo demo = new NCDirectDemo();
         demo.init();   
         try {     
         	uap_token = demo.loginNC();
+        	//uap_token = "00000154275fd0e22aadd8ef57190c289fb558d654c5bbb0f35d72e5b89cd3a3c57967948fe090a98acb62db25ba4085ef3f4bcaefdb7205056e85a814b7aeb866d7180aaf92accfafca3eae03489c045a991f4f19092c94bd8358da935bf0b0ac2b7ebd00000154275fd0e2";
         	NCApi.getInstance().setUap_token(uap_token);       	
         	
         	System.out.println("查询销售订单");  		
@@ -53,7 +59,7 @@ public class NCDirectDemo {
      * 初始化信息
      */
     public void init(){
-        
+    	NCApi.getInstance().setGateway_url(store_url);
         NCApi.getInstance().setUap_dataSource(uap_dataSource);
         NCApi.getInstance().setUap_token(uap_token);
         NCApi.getInstance().setUap_usercode(uap_usercode);

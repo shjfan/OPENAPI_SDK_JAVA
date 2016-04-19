@@ -10,8 +10,12 @@ import com.api.NCApiConst;
   
 public class NCDemo {  
   
-	//public static final String gateway_url = "http://gw.api.yonyou.com/gateway/demo";
-	public static final String gateway_url = "https://172.20.8.102:9443/gateway/demo";
+	public static final String gateway_url = "http://gw.api.yonyou.com/gateway/demo";
+	
+	//尝试https协议的话，可以修改为下面的地址
+	//public static final String gateway_url = "https://gw.api.yonyou.com/gateway/demo";
+	
+	
 	public static final String resultType = "json";
 	
 	public static final String appKey = "UtwLQ";	
