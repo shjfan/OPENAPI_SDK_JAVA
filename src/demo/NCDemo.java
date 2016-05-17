@@ -50,7 +50,7 @@ public class NCDemo {
     		getparams.put("vbillcode", "SO302015040700000028");
     		String res = NCApi.getInstance().sendGet(NCApiConst.URL_SALEORDER_BYBILLCODE, getparams);
     		System.out.println("返回结果"+res);
-    		String data = handleResult(res);
+    		JSONObject data = handleResult(res);
     		System.out.println("订单数据："+data);
         
         } catch (Exception e) {       
@@ -86,8 +86,7 @@ public class NCDemo {
 		String res = NCApi.getInstance().sendPost(
 				NCApiConst.URL_USER_LOGIN, postparam);
 		System.out.println("登录NC返回结果：" + res);		
-		String data = handleResult(res);
-		JSONObject jsonObject = new JSONObject(data);
+		JSONObject jsonObject = handleResult(res);
 		uap_token = jsonObject.getString("uap_token");
 		if (uap_token == null || uap_token.trim().length() <= 0) {
 			throw new Exception("登录失败,返回uap_token为空!");
@@ -102,7 +101,7 @@ public class NCDemo {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String handleResult(String jsonres)throws Exception{
+	public static JSONObject handleResult(String jsonres)throws Exception{
 		JSONObject jsonObject = new JSONObject(jsonres);
 		String statuscode = jsonObject.getString("statuscode");
 		if(!"0".equalsIgnoreCase(statuscode)){
@@ -110,6 +109,6 @@ public class NCDemo {
 			String errordetailmsg = jsonObject.getString("errordetailmsg");
 			throw new Exception("错误编码："+statuscode+"；错误信息："+errormsg+";详细错误信息："+errordetailmsg);			
 		}
-		return jsonObject.getString("data");
+		return jsonObject.getJSONObject("data");
 	}
 }  
